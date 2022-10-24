@@ -1,5 +1,5 @@
 <template>
-    <n-card id="item-modal" :class="getSideClass()" v-if="state.modals.inventoryModal.visible">
+    <n-card id="item-modal" :class="getSideClass()" v-if="state.modals.itemModal.visible">
       <p class="close" v-on:click="closeModal()">x</p>
       <n-tabs type="line" animated size="large">
         <n-tab-pane name="actions" tab="Actions">
@@ -19,7 +19,7 @@
               {{action.split(" ").length > 1 ? action.split(" ")[1] : action}}
             </n-button>
           </div>
-          <n-collapse v-if="state.modals.inventoryModal.menu === 'inventory'" class="additional-collapse">
+          <n-collapse v-if="state.modals.itemModal.menu === 'inventory'" class="additional-collapse">
             <n-collapse-item title="Additional actions">
               <div class="additional-actions">
                 <n-button ghost type="error" @click="dropAll()">
@@ -30,6 +30,15 @@
                     Drop
                   </n-button>
                   <n-input-number class="input-field" button-placement="both" v-model:value="dropValue" min=1 :max="item.amount" />
+                </div>
+                <n-button ghost type="warning" @click="giveAll()">
+                  Give all
+                </n-button>
+                <div class="input-button">
+                  <n-button ghost type="warning" @click="giveItems()">
+                    Give
+                  </n-button>
+                  <n-input-number class="input-field" button-placement="both" v-model:value="giveValue" min=1 :max="item.amount" />
                 </div>
               </div>
             </n-collapse-item>
@@ -57,28 +66,32 @@ const { getActions, ansiToHtml } = helpers()
 const { cmd } = useWebSocket()
 
 const isDrinkDisabled = ref(false)
-const item = ref(state.modals.inventoryModal.item)
+const item = ref(state.modals.itemModal.item)
 const actions = ref(getActions({
   name: item.value.name,
   type: item.value.type,
   subtype: item.value.subtype
 }))
 const dropValue = ref(1)
+const giveValue = ref(1)
 
 // Watchers
 
-watch(() => state.modals.inventoryModal.item, () => {
-  if (state.modals.inventoryModal.visible) {
-    item.value = state.modals.inventoryModal.item
+watch(() => state.modals.itemModal.item, () => {
+  if (state.modals.itemModal.visible) {
+    item.value = state.modals.itemModal.item
     const commandCacheKey = command_ids.EXAMINE + item.value.iid.toString()
     cmd(`examine iid:${item.value.iid}`, commandCacheKey)
     setActions()
+    console.log(state.gameState.party)
+    console.log(state.gameState.player)
+    // TODO set a merc const ref above and set it here. That way we can use the merc eid to give stuff to them
   }
-  dropValue.value = 1
+  dropValue.value, giveValue.value = 1
 })
 
-watch(() => state.modals.inventoryModal.menu, () => {
-  state.modals.inventoryModal.visible ? setActions() : null
+watch(() => state.modals.itemModal.menu, () => {
+  state.modals.itemModal.visible ? setActions() : null
 })
 
 watch(()=> state.gameState.affects, () => {
@@ -91,7 +104,7 @@ watch(()=> state.gameState.affects, () => {
 
 function closeModal() {
   state.modals.zindex-=1
-  state.modals.inventoryModal.visible = false
+  state.modals.itemModal.visible = false
 }
 
 function clickedAction(action) {
@@ -114,10 +127,17 @@ function dropItems() {
   cmd(`drop ${dropValue.value}x iid:${item.value.iid}`)
 }
 
+function giveAll() {
+
+}
+
+function giveItems() {
+
+}
 // Setters
 
 function setActions() {
-  if (state.modals.inventoryModal.menu === 'inventory') {
+  if (state.modals.itemModal.menu === 'inventory') {
     actions.value = getActions({
       name: item.value.name,
       type: item.value.type,
@@ -125,8 +145,8 @@ function setActions() {
     })
   }
 
-  if (state.modals.inventoryModal.menu === 'equipment') {
-    state.modals.inventoryModal.visible ? actions.value = ['remove'] : null
+  if (state.modals.itemModal.menu === 'equipment') {
+    state.modals.itemModal.visible ? actions.value = ['remove'] : null
   }
 }
 

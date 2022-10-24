@@ -36,8 +36,8 @@ function setEquipment(equipmentIIDs) {
 }
 
 function clickHandler(item) {
-  state.modals.inventoryModal.visible = true
-  state.modals.inventoryModal.item = item
-  state.modals.inventoryModal.menu = 'equipment'
+  state.modals.itemModal.visible = true
+  state.modals.itemModal.item = item
+  state.modals.itemModal.menu = 'equipment'
 }
 </script>

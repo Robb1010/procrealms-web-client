@@ -81,13 +81,12 @@ export const state = reactive({
     slots: []
   },
   modals: {
-    inventoryModal: {
+    itemModal: {
       visible: false,
       item: ref({}),
       menu: ''
     },
     mapModal: false,
-    mercModal: false
   }
 })
 

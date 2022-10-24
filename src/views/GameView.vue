@@ -8,9 +8,8 @@
     :sider-placement="state.options.swapControls ? 'right' : 'left'">
     <SideMenu v-if="!state.options.swapControls"></SideMenu>
     <n-layout>
-      <ModalCard></ModalCard>
+      <ItemModal></ItemModal>
       <MapModal></MapModal>
-      <MercModal></MercModal>
       <div class="content-area">
         <LineOutput></LineOutput>
       </div>
@@ -28,9 +27,8 @@ import LineOutput from '@/components/main-area/LineOutput.vue'
 import KeyboardInput from '@/components/main-area/KeyboardInput.vue'
 import LogoutModal from '@/components/modals/LogoutModal.vue'
 import HelpOverlay from '@/components/HelpOverlay.vue'
-import ModalCard from '@/components/modals/ModalCard'
+import ItemModal from '@/components/modals/ItemModal'
 import MapModal from '@/components/modals/MapModal'
-import MercModal from '@/components/modals/MercModal'
 import SideMenu from '@/components/side-menu/SideMenu'
 
 try {
