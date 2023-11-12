@@ -72,7 +72,7 @@ const mercSkills = ref([])
 const mercInventory = ref([])
 const mercEquipment = ref({})
 
-watch(() => state.gameState.party, function() {
+watch(() => [state.gameState.party, state.modals.mercModal], function() {
   findAndSetMerc()
 })
 
